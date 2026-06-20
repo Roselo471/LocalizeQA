@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from translator import translate, CONTENT_TYPES
 from evaluator import evaluate, format_report
+from fixer import fix, format_diff
 
 # Load API key from .env file
 load_dotenv()
@@ -106,10 +107,34 @@ def main():
         except Exception as e:
             print(f"Failed!")
             print(f"  Error: {e}")
+            continue  # Skip fix if evaluation failed
+
+        # Step 3: Fix (only if issues were found)
+        print(f"  Fixing...", end=" ", flush=True)
+        try:
+            fix_result = fix(
+                source_text=sample["text"],
+                current_translation=translation,
+                eval_result=eval_result,
+                client=client,
+            )
+            print("Done!")
+
+            if fix_result["had_issues"]:
+                print(f"\n  [Issues Fixed: {len(fix_result['issues_fixed'])}]")
+                for issue in fix_result["issues_fixed"]:
+                    print(f"    • {issue}")
+                print(f"\n  [Before vs After]")
+                print(format_diff(translation, fix_result["fixed_translation"]))
+            else:
+                print(f"\n  No issues to fix.")
+        except Exception as e:
+            print(f"Failed!")
+            print(f"  Error: {e}")
 
     print(f"{'=' * 60}")
-    print("  Pipeline complete: translate → evaluate")
-    print("  Next step: fix suggestions based on evaluation.")
+    print("  Pipeline complete: translate → evaluate → fix")
+    print("  All 3 core modules operational.")
     print("=" * 60)
 
 

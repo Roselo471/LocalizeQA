@@ -115,26 +115,59 @@ def evaluate(
 
     raw_output = response.choices[0].message.content
 
-    # Parse JSON from response, handling potential markdown fences
+    # Handle None or empty response — retry once
+    if not raw_output or not raw_output.strip():
+        response = client.chat.completions.create(
+            model="deepseek-v4-flash",
+            max_tokens=1500,
+            temperature=0.1,
+            messages=[
+                {"role": "user", "content": prompt + "\n\nIMPORTANT: Respond with ONLY a valid JSON object. No other text."}
+            ],
+        )
+        raw_output = response.choices[0].message.content or ""
+
+    # Parse JSON from response, handling various formatting issues
     cleaned = raw_output.strip()
+
+    # Remove markdown code fences if present
     if cleaned.startswith("```"):
-        # Remove ```json ... ``` wrapping
         lines = cleaned.split("\n")
-        cleaned = "\n".join(lines[1:-1])
+        cleaned = "\n".join(
+            line for line in lines
+            if not line.strip().startswith("```")
+        )
+
+    # Try to extract JSON object from the text
+    start = cleaned.find("{")
+    end = cleaned.rfind("}") + 1
+    if start != -1 and end > start:
+        cleaned = cleaned[start:end]
 
     try:
         result = json.loads(cleaned)
     except json.JSONDecodeError:
-        # If parsing fails, return an error result
-        result = {
-            "accuracy": {"score": 0, "issues": ["Failed to parse evaluation"]},
-            "fluency": {"score": 0, "issues": ["Failed to parse evaluation"]},
-            "cultural_adaptation": {"score": 0, "issues": ["Failed to parse evaluation"]},
-            "terminology": {"score": 0, "issues": ["Failed to parse evaluation"]},
-            "overall_score": 0,
-            "summary": "评估失败：无法解析 AI 返回的结果",
-            "_raw_output": raw_output,
-        }
+        # Second attempt: remove trailing commas and comments
+        import re
+        cleaned = re.sub(r',\s*}', '}', cleaned)
+        cleaned = re.sub(r',\s*]', ']', cleaned)
+        cleaned = re.sub(r'//.*?\n', '\n', cleaned)
+
+        try:
+            result = json.loads(cleaned)
+        except json.JSONDecodeError:
+            # Debug: print raw output so user can report the issue
+            print(f"\n  [DEBUG] Raw API output: {repr(raw_output[:500])}")
+
+            result = {
+                "accuracy": {"score": 0, "issues": ["Failed to parse evaluation"]},
+                "fluency": {"score": 0, "issues": ["Failed to parse evaluation"]},
+                "cultural_adaptation": {"score": 0, "issues": ["Failed to parse evaluation"]},
+                "terminology": {"score": 0, "issues": ["Failed to parse evaluation"]},
+                "overall_score": 0,
+                "summary": "评估失败：无法解析 AI 返回的结果",
+                "_raw_output": raw_output,
+            }
 
     return result
 
