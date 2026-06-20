@@ -24,7 +24,8 @@ An automated quality assessment system for English-to-Chinese travel content loc
 - [x] Core translation module
 - [x] Quality evaluation module
 - [x] Fix suggestion module
-- [ ] Database layer
+- [x] Database layer
+- [x] Automated benchmark
 - [ ] REST API
 - [ ] Web interface
 - [ ] Automated benchmark
@@ -62,10 +63,12 @@ python main.py
 
 ```
 LocalizeQA/
-├── main.py              # Entry point
+├── main.py              # Entry point — translate + evaluate + fix
 ├── translator.py        # Translation module
 ├── evaluator.py         # Quality evaluation module
 ├── fixer.py             # Fix suggestion module
+├── database.py          # SQLite storage layer
+├── benchmark.py         # Automated benchmark runner
 ├── requirements.txt     # Python dependencies
 ├── .env.example         # API key template
 ├── .gitignore           # Git ignore rules

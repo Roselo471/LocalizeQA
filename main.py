@@ -10,6 +10,7 @@ from openai import OpenAI
 from translator import translate, CONTENT_TYPES
 from evaluator import evaluate, format_report
 from fixer import fix, format_diff
+from database import get_connection, save_record
 
 # Load API key from .env file
 load_dotenv()
@@ -29,6 +30,9 @@ def main():
         api_key=api_key,
         base_url="https://api.deepseek.com",
     )
+
+    # Initialize database
+    conn = get_connection()
 
     # === Sample travel content for testing ===
     samples = [
@@ -128,6 +132,9 @@ def main():
                 print(format_diff(translation, fix_result["fixed_translation"]))
             else:
                 print(f"\n  No issues to fix.")
+
+            # Save to database
+            save_record(conn, sample["text"], translation, sample["type"], eval_result, fix_result)
         except Exception as e:
             print(f"Failed!")
             print(f"  Error: {e}")
@@ -136,6 +143,8 @@ def main():
     print("  Pipeline complete: translate → evaluate → fix")
     print("  All 3 core modules operational.")
     print("=" * 60)
+
+    conn.close()
 
 
 if __name__ == "__main__":
