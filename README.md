@@ -22,7 +22,7 @@ An automated quality assessment system for English-to-Chinese travel content loc
 
 - [x] Project setup
 - [x] Core translation module
-- [ ] Quality evaluation module
+- [x] Quality evaluation module
 - [ ] Fix suggestion module
 - [ ] Database layer
 - [ ] REST API

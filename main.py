@@ -1,13 +1,14 @@
 """
 main.py — Entry point for LocalizeQA
 
-Run this script to test the translation pipeline.
+Run this script to test the translation + evaluation pipeline.
 """
 
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
 from translator import translate, CONTENT_TYPES
+from evaluator import evaluate, format_report
 
 # Load API key from .env file
 load_dotenv()
@@ -63,7 +64,7 @@ def main():
     ]
 
     print("=" * 60)
-    print("  LocalizeQA — Translation Pipeline Test")
+    print("  LocalizeQA — Translation + Evaluation Pipeline")
     print("=" * 60)
 
     for i, sample in enumerate(samples, 1):
@@ -74,23 +75,41 @@ def main():
         print(f"\n  [English Source]")
         print(f"  {sample['text']}")
 
+        # Step 1: Translate
         print(f"\n  Translating...", end=" ", flush=True)
-
         try:
-            result = translate(
+            translation = translate(
                 source_text=sample["text"],
                 content_type=sample["type"],
                 client=client,
             )
             print("Done!")
             print(f"\n  [Chinese Translation]")
-            print(f"  {result}")
+            print(f"  {translation}")
+        except Exception as e:
+            print(f"Failed!")
+            print(f"  Error: {e}")
+            continue  # Skip evaluation if translation failed
+
+        # Step 2: Evaluate
+        print(f"\n  Evaluating...", end=" ", flush=True)
+        try:
+            eval_result = evaluate(
+                source_text=sample["text"],
+                translated_text=translation,
+                content_type=sample["type"],
+                client=client,
+            )
+            print("Done!")
+            print(f"\n  [Quality Report]")
+            print(format_report(eval_result))
         except Exception as e:
             print(f"Failed!")
             print(f"  Error: {e}")
 
-    print(f"\n{'=' * 60}")
-    print("  Translation complete. Next step: quality evaluation.")
+    print(f"{'=' * 60}")
+    print("  Pipeline complete: translate → evaluate")
+    print("  Next step: fix suggestions based on evaluation.")
     print("=" * 60)
 
 
