@@ -26,6 +26,7 @@ An automated quality assessment system for English-to-Chinese travel content loc
 - [x] Fix suggestion module
 - [x] Database layer
 - [x] Automated benchmark
+- [x] Web interface
 - [ ] REST API
 - [ ] Web interface
 - [ ] Automated benchmark
@@ -56,7 +57,14 @@ cp .env.example .env
 ### 4. Run
 
 ```bash
+# Command line mode
 python main.py
+
+# Web interface
+streamlit run app.py
+
+# Run benchmark (12 test samples)
+python benchmark.py
 ```
 
 ## Project Structure
@@ -64,6 +72,7 @@ python main.py
 ```
 LocalizeQA/
 ├── main.py              # Entry point — translate + evaluate + fix
+├── app.py               # Streamlit web interface
 ├── translator.py        # Translation module
 ├── evaluator.py         # Quality evaluation module
 ├── fixer.py             # Fix suggestion module
