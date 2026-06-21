@@ -8,9 +8,9 @@ An automated system that translates English travel content into culturally adapt
 |---|---|
 | ![workspace](screenshots/workspace.png) | ![dashboard](screenshots/dashboard.png) |
 
-| Score Trends & Issues | Translation History |
+| Translation History | Batch Processing |
 |---|---|
-| ![trends](screenshots/trends.png) | ![history](screenshots/history.png) |
+| ![history](screenshots/history.png) | ![batch](screenshots/batch.png) |
 
 ## The Problem
 
