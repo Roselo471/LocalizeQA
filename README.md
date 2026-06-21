@@ -2,7 +2,15 @@
 
 An automated system that translates English travel content into culturally adapted Simplified Chinese, evaluates translation quality across four dimensions, and generates targeted fixes — all powered by LLMs.
 
-**[Live Demo](https://localizeqa.streamlit.app)** ← (update after deployment)
+## Screenshots
+
+| Translation Workspace | Quality Dashboard |
+|---|---|
+| ![workspace](screenshots/workspace.png) | ![dashboard](screenshots/dashboard.png) |
+
+| Score Trends & Issues | Translation History |
+|---|---|
+| ![trends](screenshots/trends.png) | ![history](screenshots/history.png) |
 
 ## The Problem
 
@@ -62,7 +70,7 @@ Built from real-world experience doing AI localization QA at Welo Data (Welocali
 | Database | SQLite |
 | Web UI | Streamlit |
 | Visualization | Plotly |
-| Deployment | Streamlit Cloud |
+| Deployment | Local / Streamlit Cloud (optional) |
 
 ## Quick Start
 
@@ -73,7 +81,7 @@ Built from real-world experience doing AI localization QA at Welo Data (Welocali
 ### Installation
 
 ```bash
-git clone https://github.com/Roselo471/LocalizeQA.git
+git clone https://github.com/YOUR_USERNAME/LocalizeQA.git
 cd LocalizeQA
 pip install -r requirements.txt
 cp .env.example .env
