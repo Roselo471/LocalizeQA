@@ -74,7 +74,7 @@ I'm planning to add support for more target languages (Japanese, Spanish), build
 
 If you're working in localization, AI content, or multilingual systems, I'd love to connect and hear about the challenges you're facing.
 
-**Try it out:** [GitHub](https://github.com/YOUR_USERNAME/LocalizeQA) | [Live Demo](https://localizeqa.streamlit.app)
+**Try it out:** [GitHub](https://github.com/Roselo471/LocalizeQA) 
 
 ---
 *Built by Jie Xu — CS student at University of the People, AI localization QA at Welo Data*
